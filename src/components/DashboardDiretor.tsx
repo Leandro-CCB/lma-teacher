@@ -229,7 +229,14 @@ export function DashboardDiretor({
                       #{idx + 1}
                     </span>
                     <div>
-                      <div className="font-semibold text-zinc-100 text-xs sm:text-sm">{item.aluno.nome}</div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-zinc-100 text-xs sm:text-sm">{item.aluno.nome}</span>
+                        {item.turma && (
+                          <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                            {item.turma.nome}
+                          </span>
+                        )}
+                      </div>
                       <div className="text-[11px] text-zinc-400 mt-0.5">
                         Resp: {item.aluno.responsavel || 'Cadastrado'} • Tel: {item.aluno.telefoneResponsavel || 'Não inf.'}
                       </div>
@@ -263,38 +270,77 @@ export function DashboardDiretor({
         </div>
       </div>
 
-      {/* Horários e Organização da Grade Escolar */}
+      {/* Quadro de Todas as Turmas da Unidade Escolar */}
       <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 shadow-xl">
-        <h3 className="text-sm font-bold text-zinc-100 mb-2 flex items-center gap-2">
-          <Clock className="w-4 h-4 text-indigo-400" />
-          Quadro Geral de Horários e Turnos da Unidade
-        </h3>
-        <p className="text-xs text-zinc-400 mb-4">Carga horária padrão conforme LDB (800h e 200 dias letivos)</p>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-          <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
-            <div className="flex items-center justify-between font-bold text-zinc-200">
-              <span>Turno Manhã</span>
-              <span className="text-indigo-400">07:00 às 12:00</span>
-            </div>
-            <p className="text-zinc-500">5 aulas de 50 minutos diárias + 20 minutos de recreio orientado.</p>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+          <div>
+            <h3 className="text-sm font-bold text-zinc-100 flex items-center gap-2">
+              <Clock className="w-4 h-4 text-indigo-400" />
+              Quadro de Todas as Turmas da Unidade ({turmas.length} turmas cadastradas)
+            </h3>
+            <p className="text-xs text-zinc-400">Visão consolidada de todas as salas, docentes e turnos da instituição</p>
           </div>
+          <span className="text-xs font-semibold text-zinc-400">
+            Total Geral de Estudantes: <strong className="text-zinc-200">{totalAlunos}</strong>
+          </span>
+        </div>
 
-          <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2 ring-1 ring-indigo-500/30">
-            <div className="flex items-center justify-between font-bold text-zinc-200">
-              <span>Turno Tarde (4º C Atual)</span>
-              <span className="text-indigo-400">12:30 às 17:30</span>
-            </div>
-            <p className="text-zinc-500">Professora Bruna Guedes da Silva Maia. Ensino Fundamental I Polivalente.</p>
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {turmas.map((t) => {
+            const alunosDestaTurma = alunosFarol.filter(a => a.aluno.turmaId === t.id);
+            const criticosCT = alunosDestaTurma.filter(a => a.precisaConselhoTutelar).length;
+            const riscoReprov = alunosDestaTurma.filter(a => a.riscoReprovacao).length;
+            const mediaTurma = alunosDestaTurma.length > 0
+              ? Math.round(alunosDestaTurma.reduce((acc, curr) => acc + curr.porcentagemFrequencia, 0) / alunosDestaTurma.length)
+              : 100;
 
-          <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
-            <div className="flex items-center justify-between font-bold text-zinc-200">
-              <span>Jornada Ampliada / Reforço</span>
-              <span className="text-indigo-400">Contraturno</span>
-            </div>
-            <p className="text-zinc-500">Atividades complementares, leitura, apoio pedagógico e recuperação contínua.</p>
-          </div>
+            return (
+              <div
+                key={t.id}
+                className="p-4 rounded-xl bg-zinc-950 border border-zinc-800/80 hover:border-zinc-700 transition-all space-y-3 relative overflow-hidden"
+              >
+                <div className="flex items-start justify-between">
+                  <div>
+                    <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-zinc-800 text-zinc-300">
+                      {t.turno} • {t.anoLetivo}
+                    </span>
+                    <h4 className="text-base font-black text-zinc-100 mt-1">{t.nome}</h4>
+                    <p className="text-xs text-zinc-400 truncate">{t.curso}</p>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-xs font-bold text-emerald-400">{mediaTurma}%</span>
+                    <div className="text-[10px] text-zinc-500">freq. média</div>
+                  </div>
+                </div>
+
+                <div className="text-xs text-zinc-400 pt-2 border-t border-zinc-800/80 space-y-1">
+                  <div>Docente: <strong className="text-zinc-200">{t.professora || 'Regente a definir'}</strong></div>
+                  <div className="flex items-center justify-between">
+                    <span>Estudantes: <strong className="text-zinc-200">{alunosDestaTurma.length}</strong></span>
+                    {t.sala && <span className="text-zinc-400">{t.sala}</span>}
+                  </div>
+                </div>
+
+                {/* Badges de alerta da turma */}
+                <div className="flex items-center gap-2 pt-1">
+                  {criticosCT > 0 ? (
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-orange-500/20 text-orange-400 border border-orange-500/30">
+                      {criticosCT} no Conselho Tutelar
+                    </span>
+                  ) : (
+                    <span className="text-[10px] font-semibold text-emerald-400/80">
+                      Sem casos críticos de CT
+                    </span>
+                  )}
+                  {riscoReprov > 0 && (
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 border border-rose-500/30">
+                      {riscoReprov} risco reprovação
+                    </span>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

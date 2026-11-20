@@ -57,6 +57,9 @@ export default function LmaTeacherApp() {
   const [farolTurmaFiltro, setFarolTurmaFiltro] = useState<string>('todas');
   const [farolMesFiltro, setFarolMesFiltro] = useState<string>('todos');
 
+  // Cálculo do Farol de Presença (Geral de todas as turmas para o Dashboard e métricas globais)
+  const todosAlunosFarol = calcularFarolAlunos();
+
   // Cálculo reativo do Farol de Presença considerando turma e mês filtrados
   const alunosFarol = calcularFarolAlunos(
     farolTurmaFiltro === 'todas' ? undefined : farolTurmaFiltro,
@@ -222,7 +225,7 @@ export default function LmaTeacherApp() {
         {/* Renderização Condicional de Abas */}
         {tabAtiva === 'dashboard' && perfil === 'diretor' && (
           <DashboardDiretor
-            alunosFarol={alunosFarol}
+            alunosFarol={todosAlunosFarol}
             turmas={db.turmas}
             buscasAtivas={db.buscasAtivas}
             onIrParaFarol={() => setTabAtiva('farol')}
