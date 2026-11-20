@@ -186,11 +186,17 @@ export function useSchoolStore() {
   };
 
   // Calcular Farol de Presença
-  const calcularFarolAlunos = (turmaId?: string): AlunoFarolStatus[] => {
+  const calcularFarolAlunos = (turmaId?: string, mesFiltro?: string): AlunoFarolStatus[] => {
     const listaAlunos = turmaId ? db.alunos.filter(a => a.turmaId === turmaId) : db.alunos;
     
     return listaAlunos.map(aluno => {
-      const faltasRegistradas = db.frequencias.filter(f => f.alunoId === aluno.id && (f.status === 'F' || f.status === 'FJ'));
+      const turmaDoAluno = db.turmas.find(t => t.id === aluno.turmaId);
+      let faltasRegistradas = db.frequencias.filter(f => f.alunoId === aluno.id && (f.status === 'F' || f.status === 'FJ'));
+      
+      if (mesFiltro && mesFiltro !== 'todos') {
+        faltasRegistradas = faltasRegistradas.filter(f => f.mes.toLowerCase() === mesFiltro.toLowerCase());
+      }
+
       const faltasJustificadas = faltasRegistradas.filter(f => f.status === 'FJ').length;
       const faltasNaoJustificadas = faltasRegistradas.filter(f => f.status === 'F').length;
       const totalFaltas = faltasNaoJustificadas; // Para efeito legal LDB
@@ -221,6 +227,7 @@ export function useSchoolStore() {
 
       return {
         aluno,
+        turma: turmaDoAluno,
         totalFaltas,
         faltasJustificadas,
         faltasNaoJustificadas,
@@ -425,6 +432,35 @@ export function useSchoolStore() {
     });
   };
 
+  const atualizarConfiguracoes = (novasConfig: Partial<SchoolDatabase['configuracoes']>) => {
+    setDb(prev => ({
+      ...prev,
+      configuracoes: {
+        ...prev.configuracoes,
+        ...novasConfig
+      }
+    }));
+  };
+
+  const atualizarTurma = (id: string, dados: Partial<Turma>) => {
+    setDb(prev => ({
+      ...prev,
+      turmas: prev.turmas.map(t => t.id === id ? { ...t, ...dados } : t)
+    }));
+  };
+
+  const excluirTurma = (id: string) => {
+    setDb(prev => ({
+      ...prev,
+      turmas: prev.turmas.filter(t => t.id !== id),
+      alunos: prev.alunos.filter(a => a.turmaId !== id),
+      frequencias: prev.frequencias.filter(f => f.turmaId !== id),
+      notas: prev.notas.filter(n => n.turmaId !== id),
+      conteudos: prev.conteudos.filter(c => c.turmaId !== id),
+      buscasAtivas: prev.buscasAtivas.filter(b => b.turmaId !== id)
+    }));
+  };
+
   return {
     db,
     calcularFarolAlunos,
@@ -432,6 +468,9 @@ export function useSchoolStore() {
     atualizarAluno,
     excluirAluno,
     adicionarTurma,
+    atualizarTurma,
+    excluirTurma,
+    atualizarConfiguracoes,
     salvarFrequencia,
     salvarNota,
     salvarConteudo,

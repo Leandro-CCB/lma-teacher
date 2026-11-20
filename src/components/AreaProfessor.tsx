@@ -2,10 +2,12 @@
 
 import React, { useState } from 'react';
 import { Aluno, Turma, RegistroFrequencia, RegistroNota, RegistroConteudo, Bimestre } from '@/types/school';
-import { Check, X, BookOpen, Award, Calendar, Plus, Save, Clock, HelpCircle } from 'lucide-react';
+import { Check, X, BookOpen, Award, Calendar, Plus, Save, Clock, HelpCircle, School, CheckCircle2 } from 'lucide-react';
 
 interface AreaProfessorProps {
-  turma: Turma;
+  turmas: Turma[];
+  turmaAtiva: Turma;
+  onSelecionarTurma: (turmaId: string) => void;
   alunos: Aluno[];
   frequencias: RegistroFrequencia[];
   notas: RegistroNota[];
@@ -16,7 +18,9 @@ interface AreaProfessorProps {
 }
 
 export function AreaProfessor({
-  turma,
+  turmas,
+  turmaAtiva,
+  onSelecionarTurma,
   alunos,
   frequencias,
   notas,
@@ -69,7 +73,7 @@ export function AreaProfessor({
     const novosRegistros: RegistroFrequencia[] = alunos.map(aluno => ({
       id: `freq-${aluno.id}-${dataIso}`,
       alunoId: aluno.id,
-      turmaId: turma.id,
+      turmaId: turmaAtiva.id,
       bimestre,
       mes: mesSelecionado,
       dia: diaSelecionado,
@@ -78,7 +82,7 @@ export function AreaProfessor({
     }));
 
     onSalvarFrequencia(novosRegistros);
-    alert('Chamada do dia salva com sucesso no Diário Digital!');
+    alert(`Chamada da turma ${turmaAtiva.nome} salva com sucesso!`);
   };
 
   const marcarTodosPresentes = () => {
@@ -93,7 +97,7 @@ export function AreaProfessor({
 
     onSalvarConteudo({
       id: `cont-${Date.now()}`,
-      turmaId: turma.id,
+      turmaId: turmaAtiva.id,
       bimestre,
       data: novoConteudoData,
       componenteCurricular: novoConteudoComponente,
@@ -106,7 +110,76 @@ export function AreaProfessor({
 
   return (
     <div className="space-y-6">
-      {/* Cabeçalho da Área do Professor (Idêntico ao Diário Oficial) */}
+      
+      {/* SELETOR DE TURMA DESTACADO E COM BOTÕES GRANDES PARA PREVENIR ERROS */}
+      <div className="bg-zinc-900 border-2 border-indigo-500/40 rounded-2xl p-5 shadow-2xl relative overflow-hidden">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+          <div className="flex items-center gap-3">
+            <div className="p-3 bg-indigo-600 text-white rounded-xl shadow-lg shadow-indigo-600/30">
+              <School className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-black uppercase tracking-wider text-indigo-400">
+                  Etapa Obrigatória de Segurança
+                </span>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                  Turma Selecionada: {turmaAtiva.nome}
+                </span>
+              </div>
+              <h2 className="text-xl font-black text-zinc-100">
+                Selecione a Turma para Fazer os Lançamentos
+              </h2>
+            </div>
+          </div>
+          <div className="text-xs text-zinc-400 md:text-right">
+            <div><strong>{turmas.length} turmas</strong> disponíveis para chamada</div>
+            <div className="text-[11px] text-zinc-500">Clique na turma correspondente abaixo</div>
+          </div>
+        </div>
+
+        {/* BOTÕES GRANDES E COM ALTO DESTAQUE VISUAL */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 pt-2">
+          {turmas.map((t) => {
+            const isAtiva = t.id === turmaAtiva.id;
+            return (
+              <button
+                key={t.id}
+                onClick={() => onSelecionarTurma(t.id)}
+                type="button"
+                className={`p-4 rounded-xl text-left border-2 transition-all relative overflow-hidden flex flex-col justify-between ${
+                  isAtiva
+                    ? 'bg-gradient-to-br from-indigo-950 via-zinc-900 to-indigo-900/60 border-indigo-500 shadow-xl shadow-indigo-950/80 ring-2 ring-indigo-500/40 scale-[1.02]'
+                    : 'bg-zinc-950/70 border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900/80 opacity-75 hover:opacity-100'
+                }`}
+              >
+                {isAtiva && (
+                  <div className="absolute top-2 right-2 flex items-center gap-1 text-[11px] font-black uppercase px-2 py-0.5 rounded bg-indigo-600 text-white shadow-sm">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    Ativa
+                  </div>
+                )}
+                <div>
+                  <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-zinc-800 text-zinc-300">
+                    {t.turno} • {t.anoLetivo}
+                  </span>
+                  <div className="text-lg font-black text-zinc-100 mt-2 tracking-tight">
+                    {t.nome}
+                  </div>
+                  <div className="text-xs text-zinc-400 mt-0.5 truncate">{t.curso}</div>
+                </div>
+
+                <div className="mt-3 pt-2 border-t border-zinc-800/80 text-[11px] text-zinc-400 flex justify-between items-center">
+                  <span className="truncate">Docente: {t.professora || 'A definir'}</span>
+                  {t.sala && <span className="font-semibold text-zinc-300">{t.sala}</span>}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Cabeçalho da Área do Professor (Idêntico ao Diário Oficial da Turma Ativa) */}
       <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 shadow-lg">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -114,103 +187,137 @@ export function AreaProfessor({
               <span className="px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 text-xs font-semibold border border-indigo-500/30">
                 Diário de Classe Digital
               </span>
-              <span className="text-xs text-zinc-400">{turma.escola} • {turma.anoLetivo}</span>
+              <span className="text-xs text-zinc-400">{turmaAtiva.escola} • {turmaAtiva.anoLetivo}</span>
             </div>
-            <h2 className="text-xl font-black text-zinc-100 mt-1">{turma.nome} — {turma.curso}</h2>
+            <h2 className="text-2xl font-black text-zinc-100 mt-1">{turmaAtiva.nome} — {turmaAtiva.curso}</h2>
             <p className="text-xs text-zinc-400">
-              Professora Titular: <strong className="text-zinc-200">{turma.professora}</strong> | Turno: {turma.turno}
+              Professora: <strong>{turmaAtiva.professora || 'Regente'}</strong> • Turno: <strong>{turmaAtiva.turno}</strong> {turmaAtiva.sala && `• ${turmaAtiva.sala}`}
             </p>
           </div>
 
           {/* Seletor de Bimestre */}
-          <div className="flex items-center gap-1 bg-zinc-950 p-1 rounded-xl border border-zinc-800">
+          <div className="flex items-center gap-2 bg-zinc-950 p-1.5 rounded-xl border border-zinc-800 self-start md:self-auto">
+            <span className="text-xs font-bold text-zinc-400 px-2">Bimestre:</span>
             {([1, 2, 3, 4] as Bimestre[]).map(b => (
               <button
                 key={b}
                 onClick={() => setBimestre(b)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all ${
                   bimestre === b
                     ? 'bg-indigo-600 text-white shadow-md'
                     : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
                 }`}
               >
-                {b}º Bimestre
+                {b}º Bim
               </button>
             ))}
           </div>
         </div>
 
-        {/* Sub-Abas do Professor */}
-        <div className="flex items-center gap-2 mt-6 border-b border-zinc-800 pb-3">
+        {/* Sub-abas: Chamada, Notas, Conteúdo */}
+        <div className="flex items-center gap-3 mt-6 border-t border-zinc-800 pt-4">
           <button
             onClick={() => setSubAba('chamada')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               subAba === 'chamada'
-                ? 'bg-indigo-600/20 text-indigo-400 border border-indigo-500/30'
-                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
+                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800'
             }`}
           >
             <Calendar className="w-4 h-4" />
-            Lançamento de Frequência (Chamada)
+            1. Chamada Diária & Frequência
           </button>
 
           <button
             onClick={() => setSubAba('notas')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               subAba === 'notas'
-                ? 'bg-indigo-600/20 text-indigo-400 border border-indigo-500/30'
-                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
+                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800'
             }`}
           >
             <Award className="w-4 h-4" />
-            Lançamento de Notas / Conceitos
+            2. Notas & Menções Bimestrais
           </button>
 
           <button
             onClick={() => setSubAba('conteudo')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               subAba === 'conteudo'
-                ? 'bg-indigo-600/20 text-indigo-400 border border-indigo-500/30'
-                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
+                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800'
             }`}
           >
             <BookOpen className="w-4 h-4" />
-            Diário de Conteúdos Ministrados
+            3. Registro Diário de Conteúdo
           </button>
         </div>
       </div>
 
-      {/* ABA 1: LANÇAMENTO DE CHAMADA */}
+      {/* SUB-ABA 1: CHAMADA DIÁRIA */}
       {subAba === 'chamada' && (
         <div className="space-y-4">
-          {/* Controles de data e ações em lote */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-zinc-900 p-4 rounded-xl border border-zinc-800">
-            <div className="flex items-center gap-3">
-              <label className="text-xs text-zinc-400 font-semibold">Dia da Chamada:</label>
-              <select
-                value={diaSelecionado}
-                onChange={(e) => setDiaSelecionado(Number(e.target.value))}
-                className="bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-1.5 text-sm text-zinc-100 font-bold"
-              >
-                {Array.from({ length: 31 }, (_, i) => i + 1).map(d => (
-                  <option key={d} value={d}>Dia {d} de Março</option>
-                ))}
-              </select>
-              <span className="text-xs text-zinc-500">
-                Toque no botão do status para alternar: <strong>P</strong> (Presente) ➔ <strong>F</strong> (Falta) ➔ <strong>FJ</strong> (Justificada).
-              </span>
+          {/* Barra de Controles da Chamada */}
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-zinc-400">Mês:</span>
+                <select
+                  value={mesSelecionado}
+                  onChange={(e) => setMesSelecionado(e.target.value)}
+                  className="bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-1.5 text-xs text-zinc-200 font-semibold focus:border-indigo-500"
+                >
+                  <option value="fevereiro">Fevereiro</option>
+                  <option value="marco">Março</option>
+                  <option value="abril">Abril</option>
+                  <option value="maio">Maio</option>
+                  <option value="junho">Junho</option>
+                </select>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-zinc-400">Dia Letivo:</span>
+                <input
+                  type="number"
+                  min="1"
+                  max="31"
+                  value={diaSelecionado}
+                  onChange={(e) => setDiaSelecionado(Number(e.target.value))}
+                  className="w-16 bg-zinc-950 border border-zinc-800 rounded-xl px-2 py-1.5 text-xs text-center text-zinc-200 font-bold focus:border-indigo-500"
+                />
+              </div>
+
+              <span className="text-xs text-zinc-500 hidden sm:inline">•</span>
+
+              <div className="text-xs text-zinc-400 flex items-center gap-3">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+                  P = Presente
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="w-3 h-3 rounded-full bg-rose-500 inline-block"></span>
+                  F = Falta
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
+                  FJ = Falta Justificada
+                </span>
+              </div>
             </div>
 
-            <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+            <div className="flex items-center gap-2 self-end md:self-auto">
               <button
                 onClick={marcarTodosPresentes}
-                className="px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold transition-colors"
+                type="button"
+                className="px-3 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-zinc-300 transition-colors"
               >
-                Marcar Todos P
+                Todos Presentes (P)
               </button>
+
               <button
                 onClick={handleSalvarChamada}
-                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-md transition-colors"
+                type="button"
+                className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-xs font-bold text-white shadow-md shadow-emerald-600/30 transition-all"
               >
                 <Save className="w-4 h-4" />
                 Salvar Chamada
@@ -218,200 +325,260 @@ export function AreaProfessor({
             </div>
           </div>
 
-          {/* Grid de Alunos para Chamada */}
+          {/* Tabela de Alunos e Chamada */}
           <div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden shadow-xl">
-            <div className="divide-y divide-zinc-800/60">
-              {alunos.map(aluno => {
-                const status = chamadaState[aluno.id] || 'P';
-                return (
-                  <div
-                    key={aluno.id}
-                    className="flex items-center justify-between p-3.5 hover:bg-zinc-800/30 transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="font-mono text-xs font-bold px-2 py-1 bg-zinc-800 rounded text-zinc-400">
-                        {String(aluno.numero).padStart(2, '0')}
-                      </span>
-                      <div>
-                        <div className="font-semibold text-zinc-100 text-sm">{aluno.nome}</div>
-                        <div className="text-[11px] text-zinc-500">Matrícula regular</div>
-                      </div>
-                    </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-zinc-950/80 text-zinc-400 font-semibold border-b border-zinc-800 uppercase tracking-wider">
+                  <tr>
+                    <th className="py-3 px-4 w-12 text-center">Nº</th>
+                    <th className="py-3 px-4">Nome do Aluno(a)</th>
+                    <th className="py-3 px-4 text-center w-36">Status no Dia {diaSelecionado}</th>
+                    <th className="py-3 px-4 text-center w-32">Faltas Acumuladas</th>
+                    <th className="py-3 px-4 text-right">Ação</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-zinc-800">
+                  {alunos.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="py-8 text-center text-zinc-500">
+                        Nenhum aluno cadastrado nesta turma ainda. Cadastre alunos na aba Alunos ou importe via Excel!
+                      </td>
+                    </tr>
+                  ) : (
+                    alunos.map((aluno) => {
+                      const status = chamadaState[aluno.id] || 'P';
+                      const faltasDoAluno = frequencias.filter(f => f.alunoId === aluno.id && f.status === 'F').length;
 
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => togglePresenca(aluno.id)}
-                        className={`w-14 h-9 rounded-xl font-black text-sm flex items-center justify-center transition-all ${
-                          status === 'P'
-                            ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 hover:bg-emerald-500/30'
-                            : status === 'F'
-                            ? 'bg-rose-500/20 text-rose-400 border border-rose-500/40 hover:bg-rose-500/30 ring-2 ring-rose-500/20'
-                            : 'bg-amber-500/20 text-amber-400 border border-amber-500/40 hover:bg-amber-500/30'
-                        }`}
-                      >
-                        {status === 'P' && 'P'}
-                        {status === 'F' && 'F'}
-                        {status === 'FJ' && 'FJ'}
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
+                      return (
+                        <tr key={aluno.id} className="hover:bg-zinc-800/40 transition-colors">
+                          <td className="py-3 px-4 text-center font-mono font-bold text-zinc-500">
+                            {String(aluno.numero).padStart(2, '0')}
+                          </td>
+                          <td className="py-3 px-4 font-bold text-zinc-200">
+                            {aluno.nome}
+                          </td>
+                          <td className="py-3 px-4 text-center">
+                            <button
+                              onClick={() => togglePresenca(aluno.id)}
+                              className={`w-14 py-1 rounded-lg font-black text-xs transition-all shadow-sm ${
+                                status === 'P'
+                                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                                  : status === 'F'
+                                  ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                                  : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                              }`}
+                            >
+                              {status}
+                            </button>
+                          </td>
+                          <td className="py-3 px-4 text-center">
+                            <span className={`font-black text-xs ${faltasDoAluno >= 15 ? 'text-rose-400 font-extrabold' : 'text-zinc-400'}`}>
+                              {faltasDoAluno} {faltasDoAluno === 1 ? 'falta' : 'faltas'}
+                            </span>
+                          </td>
+                          <td className="py-3 px-4 text-right">
+                            <button
+                              onClick={() => togglePresenca(aluno.id)}
+                              className="text-[11px] text-indigo-400 hover:text-indigo-300 font-semibold"
+                            >
+                              Alternar P/F/FJ
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
       )}
 
-      {/* ABA 2: LANÇAMENTO DE NOTAS / CONCEITOS (S / I) */}
+      {/* SUB-ABA 2: NOTAS BIMESTRAIS (CONCEITOS S / I / EP) */}
       {subAba === 'notas' && (
-        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden shadow-xl p-4">
-          <div className="mb-4 text-xs text-zinc-400 flex items-center justify-between">
-            <span>Conceitos oficiais do Diário: <strong>S</strong> (Satisfatório) | <strong>I</strong> (Insuficiente) | <strong>EP</strong> (Em Processo)</span>
-            <span className="text-indigo-400 font-semibold">{bimestre}º Bimestre</span>
+        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden shadow-xl p-5 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-zinc-800">
+            <div>
+              <h3 className="text-base font-bold text-zinc-100">
+                Grade de Menções e Avaliações — {bimestre}º Bimestre
+              </h3>
+              <p className="text-xs text-zinc-400">
+                Escala oficial da rede: <strong>S</strong> (Satisfatório), <strong>I</strong> (Insuficiente), <strong>EP</strong> (Em Processo).
+              </p>
+            </div>
+            <div className="text-xs text-zinc-500">
+              * Clique na nota para alternar o conceito do aluno.
+            </div>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-zinc-950 text-zinc-400 uppercase tracking-wider border-b border-zinc-800">
+              <thead className="bg-zinc-950/80 text-zinc-400 font-semibold border-b border-zinc-800 uppercase tracking-wider">
                 <tr>
-                  <th className="py-3 px-3">Nº</th>
-                  <th className="py-3 px-3">Aluno</th>
-                  <th className="py-3 px-2 text-center">Português</th>
-                  <th className="py-3 px-2 text-center">Matemática</th>
-                  <th className="py-3 px-2 text-center">Ciências</th>
-                  <th className="py-3 px-2 text-center">História</th>
-                  <th className="py-3 px-2 text-center">Geografia</th>
-                  <th className="py-3 px-2 text-center">Arte</th>
+                  <th className="py-3 px-3 w-10 text-center">Nº</th>
+                  <th className="py-3 px-3">Nome do Aluno</th>
+                  <th className="py-3 px-3 text-center">Português</th>
+                  <th className="py-3 px-3 text-center">Matemática</th>
+                  <th className="py-3 px-3 text-center">Ciências</th>
+                  <th className="py-3 px-3 text-center">História</th>
+                  <th className="py-3 px-3 text-center">Geografia</th>
+                  <th className="py-3 px-3 text-center">Arte</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-800/60">
-                {alunos.map(aluno => {
-                  const n = notas.find(item => item.alunoId === aluno.id && item.bimestre === bimestre) || {
-                    id: `nota-${aluno.id}-${bimestre}`,
-                    alunoId: aluno.id,
-                    turmaId: turma.id,
-                    bimestre,
-                    portugues: 'S',
-                    matematica: 'S',
-                    ciencias: 'S',
-                    historia: 'S',
-                    geografia: 'S',
-                    arte: 'S'
-                  };
+              <tbody className="divide-y divide-zinc-800">
+                {alunos.length === 0 ? (
+                  <tr>
+                    <td colSpan={8} className="py-8 text-center text-zinc-500">
+                      Nenhum aluno cadastrado nesta turma.
+                    </td>
+                  </tr>
+                ) : (
+                  alunos.map((aluno) => {
+                    const notaAluno = notas.find(n => n.alunoId === aluno.id && n.bimestre === bimestre) || {
+                      id: `nota-${aluno.id}-b${bimestre}`,
+                      alunoId: aluno.id,
+                      turmaId: turmaAtiva.id,
+                      bimestre,
+                      portugues: 'S',
+                      matematica: 'S',
+                      ciencias: 'S',
+                      historia: 'S',
+                      geografia: 'S',
+                      arte: 'S'
+                    };
 
-                  const handleChange = (materia: keyof RegistroNota, valor: string) => {
-                    const atualizada = { ...n, [materia]: valor };
-                    onSalvarNota(atualizada as RegistroNota);
-                  };
+                    const renderBotaoConceito = (disciplina: keyof RegistroNota) => {
+                      const val = (notaAluno[disciplina] as string) || 'S';
+                      return (
+                        <button
+                          onClick={() => {
+                            const next = val === 'S' ? 'I' : val === 'I' ? 'EP' : 'S';
+                            onSalvarNota({
+                              ...notaAluno,
+                              [disciplina]: next
+                            } as RegistroNota);
+                          }}
+                          className={`w-9 h-8 rounded-lg font-black text-xs transition-all ${
+                            val === 'S'
+                              ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                              : val === 'I'
+                              ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                              : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                          }`}
+                        >
+                          {val}
+                        </button>
+                      );
+                    };
 
-                  return (
-                    <tr key={aluno.id} className="hover:bg-zinc-800/30">
-                      <td className="py-2.5 px-3 font-mono text-zinc-400">{String(aluno.numero).padStart(2, '0')}</td>
-                      <td className="py-2.5 px-3 font-semibold text-zinc-200">{aluno.nome}</td>
-                      {(['portugues', 'matematica', 'ciencias', 'historia', 'geografia', 'arte'] as (keyof RegistroNota)[]).map(mat => {
-                        const val = (n[mat] as string) || 'S';
-                        return (
-                          <td key={mat} className="py-2.5 px-2 text-center">
-                            <select
-                              value={val}
-                              onChange={(e) => handleChange(mat, e.target.value)}
-                              className={`px-2 py-1 rounded font-bold text-center border text-xs ${
-                                val === 'S'
-                                  ? 'bg-emerald-950/40 text-emerald-300 border-emerald-500/30'
-                                  : val === 'I'
-                                  ? 'bg-rose-950/40 text-rose-300 border-rose-500/40'
-                                  : 'bg-amber-950/40 text-amber-300 border-amber-500/30'
-                              }`}
-                            >
-                              <option value="S">S</option>
-                              <option value="I">I</option>
-                              <option value="EP">EP</option>
-                            </select>
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  );
-                })}
+                    return (
+                      <tr key={aluno.id} className="hover:bg-zinc-800/40 transition-colors">
+                        <td className="py-2.5 px-3 text-center font-mono font-bold text-zinc-500">
+                          {String(aluno.numero).padStart(2, '0')}
+                        </td>
+                        <td className="py-2.5 px-3 font-bold text-zinc-200">
+                          {aluno.nome}
+                        </td>
+                        <td className="py-2.5 px-3 text-center">{renderBotaoConceito('portugues')}</td>
+                        <td className="py-2.5 px-3 text-center">{renderBotaoConceito('matematica')}</td>
+                        <td className="py-2.5 px-3 text-center">{renderBotaoConceito('ciencias')}</td>
+                        <td className="py-2.5 px-3 text-center">{renderBotaoConceito('historia')}</td>
+                        <td className="py-2.5 px-3 text-center">{renderBotaoConceito('geografia')}</td>
+                        <td className="py-2.5 px-3 text-center">{renderBotaoConceito('arte')}</td>
+                      </tr>
+                    );
+                  })
+                )}
               </tbody>
             </table>
           </div>
         </div>
       )}
 
-      {/* ABA 3: CONTEÚDO MINISTRADO */}
+      {/* SUB-ABA 3: CONTEÚDO MINISTRADO */}
       {subAba === 'conteudo' && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Formulário de Novo Conteúdo */}
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 shadow-xl h-fit">
-            <h3 className="font-bold text-zinc-100 text-sm mb-3 flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-indigo-400" />
-              Novo Registro de Aula Ministrada
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Formulário Novo Conteúdo */}
+          <div className="lg:col-span-5 bg-zinc-900 border border-zinc-800 rounded-2xl p-5 shadow-xl">
+            <h3 className="text-base font-bold text-zinc-100 mb-3 flex items-center gap-2">
+              <Plus className="w-5 h-5 text-indigo-400" />
+              Lançar Conteúdo Diário
             </h3>
-            <form onSubmit={handleAdicionarConteudo} className="space-y-4 text-xs">
-              <div>
-                <label className="block text-zinc-400 mb-1">Data / Período:</label>
-                <input
-                  type="date"
-                  value={novoConteudoData}
-                  onChange={(e) => setNovoConteudoData(e.target.value)}
-                  className="w-full bg-zinc-950 border border-zinc-700 rounded-lg p-2 text-zinc-200"
-                />
+
+            <form onSubmit={handleAdicionarConteudo} className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-zinc-400 mb-1">Data / Aula</label>
+                  <input
+                    type="date"
+                    value={novoConteudoData}
+                    onChange={(e) => setNovoConteudoData(e.target.value)}
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-zinc-200 focus:border-indigo-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-zinc-400 mb-1">Componente</label>
+                  <select
+                    value={novoConteudoComponente}
+                    onChange={(e) => setNovoConteudoComponente(e.target.value)}
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-zinc-200 focus:border-indigo-500"
+                  >
+                    <option value="Língua Portuguesa">Língua Portuguesa</option>
+                    <option value="Matemática">Matemática</option>
+                    <option value="Ciências">Ciências</option>
+                    <option value="História / Geografia">História / Geografia</option>
+                    <option value="Arte">Arte</option>
+                    <option value="Polivalente / Projetos">Polivalente / Projetos</option>
+                  </select>
+                </div>
               </div>
 
               <div>
-                <label className="block text-zinc-400 mb-1">Componente Curricular:</label>
-                <select
-                  value={novoConteudoComponente}
-                  onChange={(e) => setNovoConteudoComponente(e.target.value)}
-                  className="w-full bg-zinc-950 border border-zinc-700 rounded-lg p-2 text-zinc-200"
-                >
-                  <option value="Polivalente">Polivalente (Geral)</option>
-                  <option value="Língua Portuguesa">Língua Portuguesa</option>
-                  <option value="Matemática">Matemática</option>
-                  <option value="Ciências">Ciências</option>
-                  <option value="História">História</option>
-                  <option value="Geografia">Geografia</option>
-                  <option value="Arte">Arte</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-zinc-400 mb-1">Descrição das Atividades & Habilidades BNCC:</label>
+                <label className="block text-xs font-bold text-zinc-400 mb-1">Descrição do Conteúdo e Objetivos</label>
                 <textarea
                   rows={4}
+                  placeholder="Ex: Leitura compartilhada do conto de fadas; atividades de interpretação textual no livro didático pág. 45-48..."
                   value={novoConteudoTexto}
                   onChange={(e) => setNovoConteudoTexto(e.target.value)}
-                  placeholder="Ex: Leitura e interpretação de texto, substantivos e ortografia..."
-                  className="w-full bg-zinc-950 border border-zinc-700 rounded-lg p-2 text-zinc-200 placeholder-zinc-500"
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-xs text-zinc-200 focus:border-indigo-500 focus:outline-none"
                   required
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md transition-colors"
+                className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl text-xs shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2"
               >
-                Salvar Conteúdo no Diário
+                <Save className="w-4 h-4" />
+                Registrar no Diário de Classe
               </button>
             </form>
           </div>
 
-          {/* Lista de Conteúdos Registrados */}
-          <div className="lg:col-span-2 bg-zinc-900 border border-zinc-800 rounded-2xl p-5 shadow-xl space-y-3">
-            <h3 className="font-bold text-zinc-100 text-sm mb-2">Aulas e Conteúdos Registrados ({conteudos.length})</h3>
-            <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
-              {conteudos.map((item, idx) => (
-                <div key={item.id} className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800/80 space-y-1">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-bold text-indigo-400">{item.data}</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-zinc-800 text-zinc-400">
-                      {item.componenteCurricular || 'Polivalente'}
-                    </span>
+          {/* Histórico de Conteúdos da Turma */}
+          <div className="lg:col-span-7 bg-zinc-900 border border-zinc-800 rounded-2xl p-5 shadow-xl">
+            <h3 className="text-base font-bold text-zinc-100 mb-3 flex items-center justify-between">
+              <span>Conteúdos Registrados ({conteudos.length})</span>
+              <span className="text-xs text-zinc-500">{turmaAtiva.nome} • {bimestre}º Bimestre</span>
+            </h3>
+
+            <div className="space-y-3 max-h-[500px] overflow-y-auto pr-1">
+              {conteudos.length === 0 ? (
+                <p className="text-xs text-zinc-500 py-6 text-center">Nenhum conteúdo lançado para este bimestre ainda.</p>
+              ) : (
+                conteudos.map((c) => (
+                  <div key={c.id} className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-indigo-400">{c.componenteCurricular}</span>
+                      <span className="text-[11px] font-mono text-zinc-500">{c.data}</span>
+                    </div>
+                    <p className="text-xs text-zinc-300 leading-relaxed">{c.conteudo}</p>
                   </div>
-                  <p className="text-xs text-zinc-300 leading-relaxed">{item.conteudo}</p>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         </div>

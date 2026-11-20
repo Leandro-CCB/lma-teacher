@@ -88,6 +88,7 @@ export type StatusFarol = 'verde' | 'amarelo' | 'laranja' | 'vermelho';
 
 export interface AlunoFarolStatus {
   aluno: Aluno;
+  turma?: Turma;
   totalFaltas: number;
   faltasJustificadas: number;
   faltasNaoJustificadas: number;

@@ -7,6 +7,7 @@ import { ModalFicai } from '@/components/ModalFicai';
 import { AreaProfessor } from '@/components/AreaProfessor';
 import { GestaoCadastro } from '@/components/GestaoCadastro';
 import { DashboardDiretor } from '@/components/DashboardDiretor';
+import { ConfiguracoesView } from '@/components/ConfiguracoesView';
 import { AlunoFarolStatus, PerfilUsuario } from '@/types/school';
 import {
   GraduationCap,
@@ -31,6 +32,9 @@ export default function LmaTeacherApp() {
     atualizarAluno,
     excluirAluno,
     adicionarTurma,
+    atualizarTurma,
+    excluirTurma,
+    atualizarConfiguracoes,
     salvarFrequencia,
     salvarNota,
     salvarConteudo,
@@ -45,11 +49,19 @@ export default function LmaTeacherApp() {
   // Estado para Modal FICAI
   const [alunoSelecionadoFicai, setAlunoSelecionadoFicai] = useState<AlunoFarolStatus | null>(null);
 
-  // Turma ativa selecionada
+  // Turma ativa selecionada (usada no diário de classe do professor e contexto geral)
   const [turmaAtivaId, setTurmaAtivaId] = useState(db.turmas[0]?.id || 'turma-padrao');
   const turmaAtiva = db.turmas.find(t => t.id === turmaAtivaId) || db.turmas[0];
 
-  const alunosFarol = calcularFarolAlunos(turmaAtiva?.id);
+  // Filtros específicos do Farol de Presença
+  const [farolTurmaFiltro, setFarolTurmaFiltro] = useState<string>('todas');
+  const [farolMesFiltro, setFarolMesFiltro] = useState<string>('todos');
+
+  // Cálculo reativo do Farol de Presença considerando turma e mês filtrados
+  const alunosFarol = calcularFarolAlunos(
+    farolTurmaFiltro === 'todas' ? undefined : farolTurmaFiltro,
+    farolMesFiltro === 'todos' ? undefined : farolMesFiltro
+  );
 
   // Manipular abertura da Ficha FICAI
   const handleAbrirFicai = (alunoStatus: AlunoFarolStatus) => {
@@ -80,7 +92,7 @@ export default function LmaTeacherApp() {
                 </span>
               </div>
               <p className="text-[11px] text-zinc-400 hidden sm:block">
-                {turmaAtiva?.escola} • {turmaAtiva?.municipio}
+                {turmaAtiva?.escola || 'E.M. MACHADO DE ASSIS'} • {turmaAtiva?.municipio || 'Francisco Morato'}
               </p>
             </div>
           </div>
@@ -121,7 +133,7 @@ export default function LmaTeacherApp() {
 
             <button
               onClick={() => {
-                if (confirm('Deseja recarregar a planilha original do 4º Ano C?')) {
+                if (confirm('Deseja restaurar a base original do Diário de Classe do 4º Ano C?')) {
                   resetDatabase();
                   alert('Banco reiniciado com dados oficiais de Francisco Morato!');
                 }
@@ -176,6 +188,18 @@ export default function LmaTeacherApp() {
                 <Users className="w-4 h-4" />
                 Alunos, Turmas & Upload Excel
               </button>
+
+              <button
+                onClick={() => setTabAtiva('configuracoes')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+                  tabAtiva === 'configuracoes'
+                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                    : 'bg-zinc-900/60 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
+                }`}
+              >
+                <Settings className="w-4 h-4" />
+                Configurações & Limites de Faltas
+              </button>
             </>
           )}
 
@@ -209,9 +233,14 @@ export default function LmaTeacherApp() {
         {tabAtiva === 'farol' && (
           <FarolPresencaView
             alunosFarol={alunosFarol}
+            turmas={db.turmas}
+            turmaSelecionada={farolTurmaFiltro}
+            onSelecionarTurma={setFarolTurmaFiltro}
+            mesSelecionado={farolMesFiltro}
+            onSelecionarMes={setFarolMesFiltro}
             onGerarFicai={handleAbrirFicai}
             onRegistrarContato={(alunoId) => {
-              const motivo = prompt('Descreva o contato realizado com a família (ex: Ligação realizada, mãe avisada):');
+              const motivo = prompt('Descreva o contato realizado com a família (ex: Ligação realizada, responsável orientado):');
               if (motivo) {
                 alert('Contato salvo no histórico da Busca Ativa!');
               }
@@ -221,7 +250,9 @@ export default function LmaTeacherApp() {
 
         {tabAtiva === 'professor' && turmaAtiva && (
           <AreaProfessor
-            turma={turmaAtiva}
+            turmas={db.turmas}
+            turmaAtiva={turmaAtiva}
+            onSelecionarTurma={setTurmaAtivaId}
             alunos={db.alunos.filter(a => a.turmaId === turmaAtiva.id)}
             frequencias={db.frequencias.filter(f => f.turmaId === turmaAtiva.id)}
             notas={db.notas.filter(n => n.turmaId === turmaAtiva.id)}
@@ -242,13 +273,25 @@ export default function LmaTeacherApp() {
             onImportarExcel={importarPlanilhaExcel}
           />
         )}
+
+        {tabAtiva === 'configuracoes' && perfil === 'diretor' && (
+          <ConfiguracoesView
+            turmas={db.turmas}
+            totalAlunos={db.alunos.length}
+            configuracoes={db.configuracoes}
+            onAdicionarTurma={adicionarTurma}
+            onAtualizarTurma={atualizarTurma}
+            onExcluirTurma={excluirTurma}
+            onSalvarConfiguracoes={atualizarConfiguracoes}
+          />
+        )}
       </main>
 
       {/* Modal FICAI / Conselho Tutelar */}
-      {alunoSelecionadoFicai && turmaAtiva && (
+      {alunoSelecionadoFicai && (
         <ModalFicai
           alunoStatus={alunoSelecionadoFicai}
-          turma={turmaAtiva}
+          turma={alunoSelecionadoFicai.turma || turmaAtiva}
           onClose={() => setAlunoSelecionadoFicai(null)}
           onConfirmarNotificacao={handleConfirmarNotificacao}
         />
