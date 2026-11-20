@@ -1,0 +1,619 @@
+{
+  "escola": "E.M. MACHADO DE ASSIS",
+  "municipio": "Prefeitura Municipal de Francisco Morato",
+  "turma": "4º ANO - C",
+  "curso": "Ensino Fundamental I - Polivalente",
+  "turno": "Tarde",
+  "ano_letivo": 2026,
+  "professora": "Bruna Guedes da Silva Maia",
+  "alunos": [
+    {
+      "numero": 1,
+      "nome": "ALICE DOS ANJOS PEREIRA"
+    },
+    {
+      "numero": 2,
+      "nome": "ALICE DOS SANTOS MACHADO"
+    },
+    {
+      "numero": 3,
+      "nome": "ALICE OLIVEIRA DOS SANTOS SOUZA"
+    },
+    {
+      "numero": 4,
+      "nome": "ALICE VITÓRIA ARAÚJO DE JESUS"
+    },
+    {
+      "numero": 5,
+      "nome": "ANA CLARA MOREIRA E SILVA"
+    },
+    {
+      "numero": 6,
+      "nome": "BEATRIZ DA SILVA DAMACENA"
+    },
+    {
+      "numero": 7,
+      "nome": "BERNARDO HEITOR ANDRADE PILI"
+    },
+    {
+      "numero": 8,
+      "nome": "CARLOS HENRIQUE ANDRÉ DA SILVA"
+    },
+    {
+      "numero": 9,
+      "nome": "GEOVANNA BEATRIZ FAGUNDES"
+    },
+    {
+      "numero": 10,
+      "nome": "HELENA RIBEIRO DE LIMA"
+    },
+    {
+      "numero": 11,
+      "nome": "HELLOISA CORREIA DA SILVA"
+    },
+    {
+      "numero": 12,
+      "nome": "JULIA EMANUELLY ANDRADE DE ARAÚJO"
+    },
+    {
+      "numero": 13,
+      "nome": "KAIO VICTOR DA SILVA PAULO"
+    },
+    {
+      "numero": 14,
+      "nome": "KAUAN ANDRADE DA SILVA"
+    },
+    {
+      "numero": 15,
+      "nome": "KAUAN VIEIRA DE OLIVEIRA ORLANDO"
+    },
+    {
+      "numero": 16,
+      "nome": "LIVYA SILVA MOURA"
+    },
+    {
+      "numero": 17,
+      "nome": "LORENNA RAQUEL DADARIO DE SOUZA"
+    },
+    {
+      "numero": 18,
+      "nome": "MARYANA MACHADO DOS ANJOS"
+    },
+    {
+      "numero": 19,
+      "nome": "MATHEUS HENRIQUE CAVALCANTE DA SILVA"
+    },
+    {
+      "numero": 20,
+      "nome": "MIGUEL BATISTA SANTOS"
+    },
+    {
+      "numero": 21,
+      "nome": "MIGUEL CORDEIRO ROMUALDO"
+    },
+    {
+      "numero": 22,
+      "nome": "PEDRO HENRIQUE OLIVEIRA SILVA"
+    },
+    {
+      "numero": 23,
+      "nome": "PIETRO HENRIQUE OLIVEIRA LIMA"
+    },
+    {
+      "numero": 24,
+      "nome": "RIQUELME BELLAO OLIVEIRA"
+    },
+    {
+      "numero": 25,
+      "nome": "SAMYRAH LUARAH BARLETA"
+    },
+    {
+      "numero": 26,
+      "nome": "SARA VITORIA RIBEIRO SILVA"
+    },
+    {
+      "numero": 27,
+      "nome": "SARAH LYANDRAH BARLETA"
+    },
+    {
+      "numero": 28,
+      "nome": "SOPHIA ARAÚJO ALVES DA SILVA"
+    },
+    {
+      "numero": 29,
+      "nome": "SOPHIA FERREIRA HONÓRIO"
+    }
+  ],
+  "faltas_iniciais": {
+    "ALICE DOS ANJOS PEREIRA": {
+      "fev": 0,
+      "mar": 0,
+      "abr": 4,
+      "total": 4
+    },
+    "ALICE DOS SANTOS MACHADO": {
+      "fev": 0,
+      "mar": 0,
+      "abr": 1,
+      "total": 1
+    },
+    "ALICE OLIVEIRA DOS SANTOS SOUZA": {
+      "fev": 0,
+      "mar": 0,
+      "abr": 1,
+      "total": 1
+    },
+    "ALICE VITÓRIA ARAÚJO DE JESUS": {
+      "fev": 0,
+      "mar": 0,
+      "abr": 2,
+      "total": 2
+    },
+    "ANA CLARA MOREIRA E SILVA": {
+      "fev": 0,
+      "mar": 0,
+      "abr": 3,
+      "total": 3
+    },
+    "BEATRIZ DA SILVA DAMACENA": {
+      "fev": 1,
+      "mar": 0,
+      "abr": 2,
+      "total": 3
+    },
+    "BERNARDO HEITOR ANDRADE PILI": {
+      "fev": 0,
+      "mar": 0,
+      "abr": 5,
+      "total": 5
+    },
+    "CARLOS HENRIQUE ANDRÉ DA SILVA": {
+      "fev": 0,
+      "mar": 0,
+      "abr": 3,
+      "total": 3
+    },
+    "GEOVANNA BEATRIZ FAGUNDES": {
+      "fev": 1,
+      "mar": 0,
+      "abr": 2,
+      "total": 3
+    },
+    "HELENA RIBEIRO DE LIMA": {
+      "fev": 0,
+      "mar": 0,
+      "abr": 6,
+      "total": 6
+    },
+    "HELLOISA CORREIA DA SILVA": {
+      "fev": 1,
+      "mar": 0,
+      "abr": 7,
+      "total": 8
+    },
+    "JULIA EMANUELLY ANDRADE DE ARAÚJO": {
+      "fev": 1,
+      "mar": 0,
+      "abr": 2,
+      "total": 3
+    },
+    "KAIO VICTOR DA SILVA PAULO": {
+      "fev": 0,
+      "mar": 0,
+      "abr": 1,
+      "total": 1
+    },
+    "KAUAN ANDRADE DA SILVA": {
+      "fev": 0,
+      "mar": 0,
+      "abr": 1,
+      "total": 1
+    },
+    "KAUAN VIEIRA DE OLIVEIRA ORLANDO": {
+      "fev": 5,
+      "mar": 0,
+      "abr": 12,
+      "total": 17
+    },
+    "LIVYA SILVA MOURA": {
+      "fev": 2,
+      "mar": 0,
+      "abr": 2,
+      "total": 4
+    },
+    "LORENNA RAQUEL DADARIO DE SOUZA": {
+      "fev": 1,
+      "mar": 0,
+      "abr": 2,
+      "total": 3
+    },
+    "MARYANA MACHADO DOS ANJOS": {
+      "fev": 2,
+      "mar": 0,
+      "abr": 2,
+      "total": 4
+    },
+    "MATHEUS HENRIQUE CAVALCANTE DA SILVA": {
+      "fev": 1,
+      "mar": 0,
+      "abr": 0,
+      "total": 1
+    },
+    "MIGUEL BATISTA SANTOS": {
+      "fev": 3,
+      "mar": 0,
+      "abr": 3,
+      "total": 6
+    },
+    "MIGUEL CORDEIRO ROMUALDO": {
+      "fev": 2,
+      "mar": 0,
+      "abr": 5,
+      "total": 7
+    },
+    "PEDRO HENRIQUE OLIVEIRA SILVA": {
+      "fev": 0,
+      "mar": 0,
+      "abr": 0,
+      "total": 0
+    },
+    "PIETRO HENRIQUE OLIVEIRA LIMA": {
+      "fev": 1,
+      "mar": 0,
+      "abr": 2,
+      "total": 3
+    },
+    "RIQUELME BELLAO OLIVEIRA": {
+      "fev": 0,
+      "mar": 0,
+      "abr": 1,
+      "total": 1
+    },
+    "SAMYRAH LUARAH BARLETA": {
+      "fev": 0,
+      "mar": 0,
+      "abr": 1,
+      "total": 1
+    },
+    "SARA VITORIA RIBEIRO SILVA": {
+      "fev": 3,
+      "mar": 0,
+      "abr": 4,
+      "total": 7
+    },
+    "SARAH LYANDRAH BARLETA": {
+      "fev": 3,
+      "mar": 0,
+      "abr": 1,
+      "total": 4
+    },
+    "SOPHIA ARAÚJO ALVES DA SILVA": {
+      "fev": 0,
+      "mar": 0,
+      "abr": 0,
+      "total": 0
+    },
+    "SOPHIA FERREIRA HONÓRIO": {
+      "fev": 0,
+      "mar": 0,
+      "abr": 6,
+      "total": 6
+    }
+  },
+  "notas_iniciais": {
+    "ALICE DOS ANJOS PEREIRA": {
+      "portugues": "I",
+      "matematica": "S",
+      "ciencias": "S",
+      "historia": "S",
+      "geografia": "I",
+      "arte": "S"
+    },
+    "ALICE DOS SANTOS MACHADO": {
+      "portugues": "S",
+      "matematica": "S",
+      "ciencias": "S",
+      "historia": "S",
+      "geografia": "S",
+      "arte": "S"
+    },
+    "ALICE OLIVEIRA DOS SANTOS SOUZA": {
+      "portugues": "S",
+      "matematica": "S",
+      "ciencias": "S",
+      "historia": "S",
+      "geografia": "S",
+      "arte": "S"
+    },
+    "ALICE VITÓRIA ARAÚJO DE JESUS": {
+      "portugues": "S",
+      "matematica": "S",
+      "ciencias": "S",
+      "historia": "S",
+      "geografia": "S",
+      "arte": "S"
+    },
+    "ANA CLARA MOREIRA E SILVA": {
+      "portugues": "S",
+      "matematica": "S",
+      "ciencias": "S",
+      "historia": "S",
+      "geografia": "S",
+      "arte": "S"
+    },
+    "BEATRIZ DA SILVA DAMACENA": {
+      "portugues": "S",
+      "matematica": "S",
+      "ciencias": "S",
+      "historia": "S",
+      "geografia": "S",
+      "arte": "S"
+    },
+    "BERNARDO HEITOR ANDRADE PILI": {
+      "portugues": "S",
+      "matematica": "S",
+      "ciencias": "S",
+      "historia": "S",
+      "geografia": "S",
+      "arte": "S"
+    },
+    "CARLOS HENRIQUE ANDRÉ DA SILVA": {
+      "portugues": "I",
+      "matematica": "S",
+      "ciencias": "S",
+      "historia": "S",
+      "geografia": "I",
+      "arte": "S"
+    },
+    "GEOVANNA BEATRIZ FAGUNDES": {
+      "portugues": "I",
+      "matematica": "S",
+      "ciencias": "S",
+      "historia": "S",
+      "geografia": "I",
+      "arte": "S"
+    },
+    "HELENA RIBEIRO DE LIMA": {
+      "portugues": "S",
+      "matematica": "S",
+      "ciencias": "S",
+      "historia": "S",
+      "geografia": "S",
+      "arte": "S"
+    },
+    "HELLOISA CORREIA DA SILVA": {
+      "portugues": "S",
+      "matematica": "S",
+      "ciencias": "S",
+      "historia": "S",
+      "geografia": "S",
+      "arte": "S"
+    },
+    "JULIA EMANUELLY ANDRADE DE ARAÚJO": {
+      "portugues": "S",
+      "matematica": "S",
+      "ciencias": "S",
+      "historia": "S",
+      "geografia": "S",
+      "arte": "S"
+    },
+    "KAIO VICTOR DA SILVA PAULO": {
+      "portugues": "S",
+      "matematica": "S",
+      "ciencias": "S",
+      "historia": "S",
+      "geografia": "S",
+      "arte": "S"
+    },
+    "KAUAN ANDRADE DA SILVA": {
+      "portugues": "S",
+      "matematica": "S",
+      "ciencias": "S",
+      "historia": "S",
+      "geografia": "S",
+      "arte": "S"
+    },
+    "KAUAN VIEIRA DE OLIVEIRA ORLANDO": {
+      "portugues": "S",
+      "matematica": "S",
+      "ciencias": "S",
+      "historia": "S",
+      "geografia": "S",
+      "arte": "S"
+    },
+    "LIVYA SILVA MOURA": {
+      "portugues": "S",
+      "matematica": "S",
+      "ciencias": "S",
+      "historia": "S",
+      "geografia": "S",
+      "arte": "S"
+    },
+    "LORENNA RAQUEL DADARIO DE SOUZA": {
+      "portugues": "S",
+      "matematica": "S",
+      "ciencias": "S",
+      "historia": "S",
+      "geografia": "S",
+      "arte": "S"
+    },
+    "MARYANA MACHADO DOS ANJOS": {
+      "portugues": "S",
+      "matematica": "S",
+      "ciencias": "S",
+      "historia": "S",
+      "geografia": "S",
+      "arte": "S"
+    },
+    "MATHEUS HENRIQUE CAVALCANTE DA SILVA": {
+      "portugues": "S",
+      "matematica": "S",
+      "ciencias": "S",
+      "historia": "S",
+      "geografia": "S",
+      "arte": "S"
+    },
+    "MIGUEL BATISTA SANTOS": {
+      "portugues": "S",
+      "matematica": "S",
+      "ciencias": "S",
+      "historia": "S",
+      "geografia": "S",
+      "arte": "S"
+    },
+    "MIGUEL CORDEIRO ROMUALDO": {
+      "portugues": "S",
+      "matematica": "S",
+      "ciencias": "S",
+      "historia": "S",
+      "geografia": "S",
+      "arte": "S"
+    },
+    "PEDRO HENRIQUE OLIVEIRA SILVA": {
+      "portugues": "S",
+      "matematica": "S",
+      "ciencias": "S",
+      "historia": "S",
+      "geografia": "S",
+      "arte": "S"
+    },
+    "PIETRO HENRIQUE OLIVEIRA LIMA": {
+      "portugues": "S",
+      "matematica": "S",
+      "ciencias": "S",
+      "historia": "S",
+      "geografia": "S",
+      "arte": "S"
+    },
+    "RIQUELME BELLAO OLIVEIRA": {
+      "portugues": "S",
+      "matematica": "S",
+      "ciencias": "S",
+      "historia": "S",
+      "geografia": "S",
+      "arte": "S"
+    },
+    "SAMYRAH LUARAH BARLETA": {
+      "portugues": "S",
+      "matematica": "S",
+      "ciencias": "S",
+      "historia": "S",
+      "geografia": "S",
+      "arte": "S"
+    },
+    "SARA VITORIA RIBEIRO SILVA": {
+      "portugues": "S",
+      "matematica": "S",
+      "ciencias": "S",
+      "historia": "S",
+      "geografia": "S",
+      "arte": "S"
+    },
+    "SARAH LYANDRAH BARLETA": {
+      "portugues": "S",
+      "matematica": "S",
+      "ciencias": "S",
+      "historia": "S",
+      "geografia": "S",
+      "arte": "S"
+    },
+    "SOPHIA ARAÚJO ALVES DA SILVA": {
+      "portugues": "I",
+      "matematica": "S",
+      "ciencias": "S",
+      "historia": "S",
+      "geografia": "I",
+      "arte": "S"
+    },
+    "SOPHIA FERREIRA HONÓRIO": {
+      "portugues": "S",
+      "matematica": "S",
+      "ciencias": "S",
+      "historia": "S",
+      "geografia": "S",
+      "arte": "S"
+    }
+  },
+  "conteudos_iniciais": [
+    {
+      "dia": "4",
+      "conteudo": "Geografia: formas de representação nos mapas; representação do espaço ( apresentação do Globo terrestre e mapa mundi para auxiliar no registro; língua portuguesa: interpretação do poema: \"Pagodeira\""
+    },
+    {
+      "dia": "5",
+      "conteudo": "Língua portuguesa/história: leitura: a verdadeira história do dia 8 de março; roda de conversa; interpretação de texto: Dia Internacional da mulher, mais do que comemorar é refletir."
+    },
+    {
+      "dia": "6",
+      "conteudo": "Ed física; história/língua portuguesa: confecção de cartão para a mulher; matemática: figuras geométricas espaciais."
+    },
+    {
+      "dia": "9",
+      "conteudo": "Língua portuguesa: completar a história de acordo com o texto e copiá-la no caderno atentando-se a estrutura do texto; matemática: figuras geométricas espaciais."
+    },
+    {
+      "dia": "10",
+      "conteudo": "Arte; ciências: explanação sobre as melhorias necessárias para uma cidade sustentável; língua portuguesa: interpretação do poema: A caminho da escola."
+    },
+    {
+      "dia": "11",
+      "conteudo": "Geografia: confecção de maquete; matemática: semelhanças e diferenças das figuras geométricas; faces, vértices e arestas."
+    },
+    {
+      "dia": "12",
+      "conteudo": "Língua portuguesa: treino de palavras com M antes de P e B; ditado; separações silábicas."
+    },
+    {
+      "dia": "16",
+      "conteudo": "Ed física; história: fontes escritas visuais e orais; leitura de imagem."
+    },
+    {
+      "dia": "17",
+      "conteudo": "Língua portuguesa: retomada das atividades sobre o poema a caminho da escola; matemática: figuras geométricas espaciais."
+    },
+    {
+      "dia": "18",
+      "conteudo": "Arte; ciências: sistematizar conceitos tais como reversível e irreversível; língua portuguesa: produção de textos com o tema Francisco Morato do futuro."
+    },
+    {
+      "dia": "19",
+      "conteudo": "Língua portuguesa: leitura e interpretação do texto: O lugarejo; conhecer a biografia do Dr Francisco Morato; questões relacionadas a ele; término da maquete."
+    },
+    {
+      "dia": "20",
+      "conteudo": "Ed física; história: leitura e interpretação sobre acontecimentos históricos do município; exposição das maquetes."
+    },
+    {
+      "dia": "23",
+      "conteudo": "Ciências: Roda de conversa sobre o dia da água; interpretação de texto; matemática: situações-problemas envolvendo multiplicação e divisão."
+    },
+    {
+      "dia": "24",
+      "conteudo": "Arte;Matemática: localização e movimentação dos mapas; língua portuguesa: interpretação e análise do poema: o que você vê ali ?"
+    },
+    {
+      "dia": "25",
+      "conteudo": "Língua portuguesa: gênero textual- rótulo, função social, marca, descrição e análise; ficção científica."
+    },
+    {
+      "dia": "26",
+      "conteudo": "Geografia: tipos de mapa e sua representação; pontos cardeais; matemática: número no quadro de ordens; sistema de numeração decimal."
+    },
+    {
+      "dia": "27",
+      "conteudo": "Ed física; história: fontes históricas; matemática: stop da tabuada; resolução de problemas na lousa."
+    },
+    {
+      "dia": "28",
+      "conteudo": "Exposição de Francisco Morato"
+    },
+    {
+      "dia": "30",
+      "conteudo": "Ciências: transformações químicas; alimentos que passam por transformações; matemática: decomposição; sistema monetário."
+    },
+    {
+      "dia": "31",
+      "conteudo": "Matemática: Instrumentos e medidas; simulado referente aos conteúdos estudados; arte; língua portuguesa leitura e interpretação de biografia."
+    }
+  ]
+}

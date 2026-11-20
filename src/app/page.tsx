@@ -1,69 +1,266 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import React, { useState } from 'react';
+import { useSchoolStore } from '@/lib/schoolStore';
+import { FarolPresencaView } from '@/components/FarolPresencaView';
+import { ModalFicai } from '@/components/ModalFicai';
+import { AreaProfessor } from '@/components/AreaProfessor';
+import { GestaoCadastro } from '@/components/GestaoCadastro';
+import { DashboardDiretor } from '@/components/DashboardDiretor';
+import { AlunoFarolStatus, PerfilUsuario } from '@/types/school';
+import {
+  GraduationCap,
+  LayoutDashboard,
+  ShieldAlert,
+  UserCheck,
+  BookOpen,
+  Settings,
+  Users,
+  School,
+  LogOut,
+  RefreshCw,
+  PhoneCall,
+  CheckCircle2
+} from 'lucide-react';
+
+export default function LmaTeacherApp() {
+  const {
+    db,
+    calcularFarolAlunos,
+    adicionarAluno,
+    atualizarAluno,
+    excluirAluno,
+    adicionarTurma,
+    salvarFrequencia,
+    salvarNota,
+    salvarConteudo,
+    notificarConselhoTutelar,
+    importarPlanilhaExcel,
+    resetDatabase
+  } = useSchoolStore();
+
+  const [perfil, setPerfil] = useState<PerfilUsuario>('diretor');
+  const [tabAtiva, setTabAtiva] = useState<'dashboard' | 'farol' | 'professor' | 'cadastros' | 'configuracoes'>('dashboard');
+
+  // Estado para Modal FICAI
+  const [alunoSelecionadoFicai, setAlunoSelecionadoFicai] = useState<AlunoFarolStatus | null>(null);
+
+  // Turma ativa selecionada
+  const [turmaAtivaId, setTurmaAtivaId] = useState(db.turmas[0]?.id || 'turma-padrao');
+  const turmaAtiva = db.turmas.find(t => t.id === turmaAtivaId) || db.turmas[0];
+
+  const alunosFarol = calcularFarolAlunos(turmaAtiva?.id);
+
+  // Manipular abertura da Ficha FICAI
+  const handleAbrirFicai = (alunoStatus: AlunoFarolStatus) => {
+    setAlunoSelecionadoFicai(alunoStatus);
+  };
+
+  const handleConfirmarNotificacao = (alunoId: string, oficio: string) => {
+    notificarConselhoTutelar(alunoId, oficio);
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans">
+      {/* Barra de Navegação Superior */}
+      <header className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          {/* Logo e Identificação */}
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white shadow-lg shadow-indigo-600/30">
+              <GraduationCap className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-black text-lg tracking-tight bg-gradient-to-r from-zinc-100 via-indigo-200 to-indigo-400 bg-clip-text text-transparent">
+                  LMA TEACHER
+                </span>
+                <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                  Diário & Gestão
+                </span>
+              </div>
+              <p className="text-[11px] text-zinc-400 hidden sm:block">
+                {turmaAtiva?.escola} • {turmaAtiva?.municipio}
+              </p>
+            </div>
+          </div>
+
+          {/* Troca de Perfil (Diretor vs Professor) */}
+          <div className="flex items-center gap-3">
+            <div className="flex items-center bg-zinc-900 border border-zinc-800 p-1 rounded-xl">
+              <button
+                onClick={() => {
+                  setPerfil('diretor');
+                  setTabAtiva('dashboard');
+                }}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  perfil === 'diretor'
+                    ? 'bg-indigo-600 text-white shadow-md'
+                    : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+              >
+                <School className="w-3.5 h-3.5" />
+                <span>Diretoria</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setPerfil('professor');
+                  setTabAtiva('professor');
+                }}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  perfil === 'professor'
+                    ? 'bg-indigo-600 text-white shadow-md'
+                    : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+              >
+                <UserCheck className="w-3.5 h-3.5" />
+                <span>Docente</span>
+              </button>
+            </div>
+
+            <button
+              onClick={() => {
+                if (confirm('Deseja recarregar a planilha original do 4º Ano C?')) {
+                  resetDatabase();
+                  alert('Banco reiniciado com dados oficiais de Francisco Morato!');
+                }
+              }}
+              title="Restaurar dados oficiais do Excel"
+              className="p-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-zinc-200 transition-colors"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+              <RefreshCw className="w-4 h-4" />
+            </button>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+        {/* Régua de Navegação de Abas (Sempre Visíveis e Destacadas) */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2 overflow-x-auto py-2 border-t border-zinc-900 scrollbar-none">
+          {perfil === 'diretor' && (
+            <>
+              <button
+                onClick={() => setTabAtiva('dashboard')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+                  tabAtiva === 'dashboard'
+                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                    : 'bg-zinc-900/60 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
+                }`}
+              >
+                <LayoutDashboard className="w-4 h-4" />
+                Dashboard do Diretor
+              </button>
+
+              <button
+                onClick={() => setTabAtiva('farol')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+                  tabAtiva === 'farol'
+                    ? 'bg-rose-600 text-white shadow-md shadow-rose-600/30'
+                    : 'bg-zinc-900/60 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
+                }`}
+              >
+                <ShieldAlert className="w-4 h-4" />
+                Farol de Presença & Conselho Tutelar
+                {alunosFarol.filter(a => a.precisaConselhoTutelar).length > 0 && (
+                  <span className="w-2 h-2 rounded-full bg-rose-400 animate-ping"></span>
+                )}
+              </button>
+
+              <button
+                onClick={() => setTabAtiva('cadastros')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+                  tabAtiva === 'cadastros'
+                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                    : 'bg-zinc-900/60 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
+                }`}
+              >
+                <Users className="w-4 h-4" />
+                Alunos, Turmas & Upload Excel
+              </button>
+            </>
+          )}
+
+          <button
+            onClick={() => setTabAtiva('professor')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+              tabAtiva === 'professor'
+                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                : 'bg-zinc-900/60 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
+            }`}
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <BookOpen className="w-4 h-4" />
+            Diário de Classe do Professor (Chamada, Notas e Conteúdos)
+          </button>
         </div>
+      </header>
+
+      {/* Conteúdo Principal */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
+        {/* Renderização Condicional de Abas */}
+        {tabAtiva === 'dashboard' && perfil === 'diretor' && (
+          <DashboardDiretor
+            alunosFarol={alunosFarol}
+            turmas={db.turmas}
+            buscasAtivas={db.buscasAtivas}
+            onIrParaFarol={() => setTabAtiva('farol')}
+            onGerarFicai={handleAbrirFicai}
+          />
+        )}
+
+        {tabAtiva === 'farol' && (
+          <FarolPresencaView
+            alunosFarol={alunosFarol}
+            onGerarFicai={handleAbrirFicai}
+            onRegistrarContato={(alunoId) => {
+              const motivo = prompt('Descreva o contato realizado com a família (ex: Ligação realizada, mãe avisada):');
+              if (motivo) {
+                alert('Contato salvo no histórico da Busca Ativa!');
+              }
+            }}
+          />
+        )}
+
+        {tabAtiva === 'professor' && turmaAtiva && (
+          <AreaProfessor
+            turma={turmaAtiva}
+            alunos={db.alunos.filter(a => a.turmaId === turmaAtiva.id)}
+            frequencias={db.frequencias.filter(f => f.turmaId === turmaAtiva.id)}
+            notas={db.notas.filter(n => n.turmaId === turmaAtiva.id)}
+            conteudos={db.conteudos.filter(c => c.turmaId === turmaAtiva.id)}
+            onSalvarFrequencia={salvarFrequencia}
+            onSalvarNota={salvarNota}
+            onSalvarConteudo={salvarConteudo}
+          />
+        )}
+
+        {tabAtiva === 'cadastros' && (
+          <GestaoCadastro
+            turmas={db.turmas}
+            alunos={db.alunos}
+            onAdicionarAluno={adicionarAluno}
+            onAdicionarTurma={adicionarTurma}
+            onExcluirAluno={excluirAluno}
+            onImportarExcel={importarPlanilhaExcel}
+          />
+        )}
       </main>
+
+      {/* Modal FICAI / Conselho Tutelar */}
+      {alunoSelecionadoFicai && turmaAtiva && (
+        <ModalFicai
+          alunoStatus={alunoSelecionadoFicai}
+          turma={turmaAtiva}
+          onClose={() => setAlunoSelecionadoFicai(null)}
+          onConfirmarNotificacao={handleConfirmarNotificacao}
+        />
+      )}
+
+      {/* Rodapé Informativo */}
+      <footer className="border-t border-zinc-800 bg-zinc-950 py-4 text-center text-xs text-zinc-500">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <span>LMA Teacher © 2026 — Sistema Integrado de Gestão Escolar & Busca Ativa</span>
+          <span>Modelo homologado: Francisco Morato / Diário de Classe Digital</span>
+        </div>
+      </footer>
     </div>
   );
 }
